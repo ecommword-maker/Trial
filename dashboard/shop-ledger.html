@@ -1,0 +1,548 @@
+<title>Shop Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --bg: #F3F6F5;
+    --surface: #FFFFFF;
+    --surface-2: #EAF0EE;
+    --ink: #15201C;
+    --muted: #5B6B65;
+    --line: #D8E1DE;
+    --accent: #0B7A63;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #D5EEE7;
+    --good: #1E7F48;
+    --good-soft: #DDF1E4;
+    --warn: #9A6212;
+    --warn-soft: #F8EACD;
+    --bad: #B3312A;
+    --bad-soft: #F7DEDB;
+    --grid: #E3EAE7;
+    --shadow: 0 1px 2px rgba(20, 40, 34, .06), 0 4px 16px rgba(20, 40, 34, .05);
+    --sans: "Schibsted Grotesk", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #0E1412; --surface: #151D1A; --surface-2: #1C2622; --ink: #E4EDE9; --muted: #93A59E;
+      --line: #27332F; --accent: #3DC7A3; --accent-ink: #062019; --accent-soft: #173A31;
+      --good: #5CCB8A; --good-soft: #163324; --warn: #E3AE55; --warn-soft: #3A2C12;
+      --bad: #F08A80; --bad-soft: #3D1A17; --grid: #212C28; --shadow: none;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0E1412; --surface: #151D1A; --surface-2: #1C2622; --ink: #E4EDE9; --muted: #93A59E;
+    --line: #27332F; --accent: #3DC7A3; --accent-ink: #062019; --accent-soft: #173A31;
+    --good: #5CCB8A; --good-soft: #163324; --warn: #E3AE55; --warn-soft: #3A2C12;
+    --bad: #F08A80; --bad-soft: #3D1A17; --grid: #212C28; --shadow: none;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.45;
+    padding: 24px 16px 48px;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; display: grid; gap: 20px; }
+  .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  h1, h2 { margin: 0; text-wrap: balance; }
+  h1 { font-size: 26px; font-weight: 700; letter-spacing: -.01em; }
+  h2 { font-size: 16px; font-weight: 600; }
+  .label { font-size: 11.5px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; }
+  .sub { color: var(--muted); font-size: 13.5px; }
+
+  header.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px 20px; }
+  header.top .title { display: grid; gap: 2px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .seg { display: inline-flex; background: var(--surface-2); border-radius: 8px; padding: 3px; gap: 2px; }
+  .seg button { border: 0; background: transparent; color: var(--muted); font: 500 13px var(--sans); padding: 6px 12px; border-radius: 6px; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+
+  .banner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; background: var(--accent-soft); color: var(--ink); padding: 10px 14px; border-radius: 10px; font-size: 14px; }
+  .banner.err { background: var(--bad-soft); }
+
+  .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 6px; align-content: start; }
+  .kpi .val { font-size: 24px; font-weight: 500; letter-spacing: -.02em; }
+  .delta { font-size: 12.5px; color: var(--muted); }
+  .delta.up { color: var(--good); }
+  .delta.down { color: var(--bad); }
+
+  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 14px; min-width: 0; }
+  .panel-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .grid-2 { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 20px; }
+  .grid-2b { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 20px; }
+
+  .chart svg { width: 100%; height: auto; display: block; }
+  .chart text { fill: var(--muted); font-family: var(--mono); font-size: 11px; }
+
+  .top-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+  .top-list li { display: grid; gap: 4px; }
+  .top-row { display: flex; justify-content: space-between; gap: 10px; font-size: 14px; }
+  .top-row span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .meter { height: 6px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+  .meter i { display: block; height: 100%; background: var(--accent); border-radius: 3px; }
+
+  .table-wrap { overflow-x: auto; margin: 0 -4px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { text-align: left; font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); padding: 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td { padding: 9px 8px; border-bottom: 1px solid var(--grid); vertical-align: middle; }
+  tr:last-child td { border-bottom: 0; }
+  td.r, th.r { text-align: right; }
+  .pname { font-weight: 500; }
+  .sku { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+  .pill.ok { background: var(--good-soft); color: var(--good); }
+  .pill.low { background: var(--warn-soft); color: var(--warn); }
+  .pill.out { background: var(--bad-soft); color: var(--bad); }
+  .pill.ex { background: var(--surface-2); color: var(--muted); font-weight: 500; }
+
+  form.entry { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  form.entry .full { grid-column: 1 / -1; }
+  .field { display: grid; gap: 5px; min-width: 0; }
+  .field label { font-size: 12.5px; color: var(--muted); font-weight: 500; }
+  input, select {
+    width: 100%; font: 15px var(--sans); color: var(--ink); background: var(--bg); border: 1px solid var(--line);
+    border-radius: 8px; padding: 8px 10px; min-width: 0;
+  }
+  input:focus-visible, select:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .btn { font: 600 14px var(--sans); border-radius: 8px; padding: 8px 14px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+  .btn:hover { background: var(--surface-2); }
+  .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .btn.primary:hover { filter: brightness(1.06); }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .link { background: none; border: 0; color: var(--accent); font: 500 13px var(--sans); cursor: pointer; padding: 4px 6px; border-radius: 6px; }
+  .link:hover { background: var(--surface-2); }
+  .link.danger { color: var(--bad); }
+  .row-actions { display: flex; gap: 2px; justify-content: flex-end; }
+  .empty { color: var(--muted); font-size: 14px; padding: 12px 0; }
+  .hint { font-size: 12.5px; color: var(--muted); }
+
+  .toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 9px 16px; border-radius: 8px; font-size: 14px; max-width: calc(100% - 32px); }
+
+  @media (max-width: 900px) {
+    .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-2, .grid-2b { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 420px) {
+    form.entry { grid-template-columns: minmax(0, 1fr); }
+    .kpi .val { font-size: 20px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="title">
+      <h1>Shop Ledger</h1>
+      <div class="sub" id="asof">Products, stock and sales in one place</div>
+    </div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Date range" id="range">
+        <button type="button" data-days="7" aria-pressed="false">7 days</button>
+        <button type="button" data-days="30" aria-pressed="true">30 days</button>
+        <button type="button" data-days="90" aria-pressed="false">90 days</button>
+      </div>
+      <select id="currency" aria-label="Currency" style="width:auto">
+        <option value="USD">USD $</option><option value="EUR">EUR €</option><option value="GBP">GBP £</option>
+        <option value="INR">INR ₹</option><option value="AUD">AUD $</option><option value="CAD">CAD $</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="banner" id="exampleBanner" hidden>
+    <span>You're looking at example products and sales. Add your own, then clear the examples.</span>
+    <span class="actions"><button class="btn" type="button" id="clearExamples">Clear examples</button></span>
+  </div>
+  <div class="banner err" id="offlineBanner" hidden>
+    <span id="offlineText">Saving isn't available in this view. Open the page on claude.ai to load and save your data.</span>
+  </div>
+
+  <section class="kpis" aria-label="Summary">
+    <div class="kpi"><span class="label">Revenue</span><span class="val num" id="kRev">–</span><span class="delta" id="dRev"></span></div>
+    <div class="kpi"><span class="label">Gross profit</span><span class="val num" id="kProfit">–</span><span class="delta" id="dProfit"></span></div>
+    <div class="kpi"><span class="label">Units sold</span><span class="val num" id="kUnits">–</span><span class="delta" id="dUnits"></span></div>
+    <div class="kpi"><span class="label">Needs restock</span><span class="val num" id="kLow">–</span><span class="delta" id="dLow"></span></div>
+  </section>
+
+  <div class="grid-2">
+    <section class="panel">
+      <div class="panel-head"><h2>Daily revenue</h2><span class="sub" id="chartNote"></span></div>
+      <div class="chart" id="chart"></div>
+    </section>
+    <section class="panel">
+      <div class="panel-head"><h2>Top sellers</h2><span class="sub">by revenue</span></div>
+      <ul class="top-list" id="topList"></ul>
+    </section>
+  </div>
+
+  <div class="grid-2b">
+    <section class="panel">
+      <div class="panel-head"><h2>Record a sale</h2></div>
+      <form class="entry" id="saleForm" autocomplete="off">
+        <div class="field full"><label for="sProduct">Product</label><select id="sProduct" required></select></div>
+        <div class="field"><label for="sQty">Quantity</label><input id="sQty" type="number" min="1" step="1" value="1" required></div>
+        <div class="field"><label for="sPrice">Unit price</label><input id="sPrice" type="number" min="0" step="0.01" required></div>
+        <div class="field full"><label for="sDate">Date</label><input id="sDate" type="date" required></div>
+        <div class="actions full"><button class="btn primary" type="submit" id="saleSubmit">Record sale</button><span class="hint">Stock goes down by the quantity sold.</span></div>
+      </form>
+    </section>
+    <section class="panel">
+      <div class="panel-head"><h2>Recent sales</h2><span class="sub" id="salesCount"></span></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Date</th><th>Product</th><th class="r">Qty</th><th class="r">Total</th><th></th></tr></thead>
+          <tbody id="salesBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <section class="panel">
+    <div class="panel-head"><h2>Inventory</h2><span class="sub" id="invCount"></span></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Product</th><th class="r">Price</th><th class="r">Cost</th><th class="r">Margin</th><th class="r">In stock</th><th>Status</th><th></th></tr></thead>
+        <tbody id="invBody"></tbody>
+      </table>
+    </div>
+    <form class="entry" id="productForm" autocomplete="off" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));">
+      <div class="field" style="grid-column: span 2"><label for="pName">Product name</label><input id="pName" required maxlength="80"></div>
+      <div class="field"><label for="pSku">SKU</label><input id="pSku" maxlength="30"></div>
+      <div class="field"><label for="pPrice">Price</label><input id="pPrice" type="number" min="0" step="0.01" required></div>
+      <div class="field"><label for="pCost">Cost</label><input id="pCost" type="number" min="0" step="0.01" required></div>
+      <div class="field"><label for="pStock">In stock</label><input id="pStock" type="number" step="1" required></div>
+      <div class="field"><label for="pReorder">Restock at</label><input id="pReorder" type="number" min="0" step="1" value="5" required></div>
+      <div class="actions full">
+        <button class="btn primary" type="submit" id="productSubmit">Add product</button>
+        <button class="btn" type="button" id="productCancel" hidden>Cancel edit</button>
+      </div>
+    </form>
+  </section>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const state = { products: new Map(), sales: [], days: 30, currency: "USD", editing: null, db: null, readOnly: false };
+  let fmtCache = null;
+
+  try { const d = parseInt(localStorage.getItem("ledger.days"), 10); if ([7, 30, 90].includes(d)) state.days = d; } catch (e) {}
+
+  // ---------- helpers ----------
+  const money = (n) => {
+    if (!fmtCache || fmtCache.c !== state.currency) {
+      fmtCache = { c: state.currency, f: new Intl.NumberFormat(undefined, { style: "currency", currency: state.currency }) };
+    }
+    return fmtCache.f.format(n || 0);
+  };
+  const moneyShort = (n) => new Intl.NumberFormat(undefined, { style: "currency", currency: state.currency, notation: "compact", maximumFractionDigits: 1 }).format(n);
+  const intf = new Intl.NumberFormat();
+  const iso = (d) => { const z = new Date(d.getTime() - d.getTimezoneOffset() * 60000); return z.toISOString().slice(0, 10); };
+  const today = () => iso(new Date());
+  const addDays = (s, n) => { const d = new Date(s + "T00:00:00"); d.setDate(d.getDate() + n); return iso(d); };
+  const niceDate = (s) => new Date(s + "T00:00:00").toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  const el = (tag, props, ...kids) => { const e = document.createElement(tag); Object.assign(e, props || {}); for (const k of kids) if (k != null) e.append(k); return e; };
+  let toastTimer;
+  function toast(msg) { const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => (t.hidden = true), 2600); }
+
+  function handleWriteError(e) {
+    if (e && e.code === "invalid_argument") { state.readOnly = true; applyReadOnly(); toast("You can view this ledger but not change it."); }
+    else if (e && e.code === "quota_exceeded") toast("The ledger is full. Delete old sales to make room.");
+    else toast("Couldn't save. Check your connection and try again.");
+  }
+  function applyReadOnly() {
+    const off = state.readOnly || !state.db;
+    document.querySelectorAll("#saleForm input, #saleForm select, #saleForm button, #productForm input, #productForm button, #clearExamples, #currency")
+      .forEach((n) => (n.disabled = off));
+  }
+
+  // ---------- derived numbers ----------
+  function inRange(from, to) { return state.sales.filter((s) => s.date >= from && s.date <= to); }
+  function totals(list) {
+    let rev = 0, profit = 0, units = 0;
+    for (const s of list) { const r = s.qty * s.unitPrice; rev += r; profit += r - s.qty * (s.unitCost || 0); units += s.qty; }
+    return { rev, profit, units };
+  }
+  function deltaText(node, cur, prev) {
+    node.className = "delta";
+    if (!prev) { node.textContent = cur ? "no sales in prior period" : "—"; return; }
+    const pct = ((cur - prev) / Math.abs(prev)) * 100;
+    node.classList.add(pct >= 0 ? "up" : "down");
+    node.textContent = (pct >= 0 ? "▲ " : "▼ ") + Math.abs(pct).toFixed(1) + "% vs prior " + state.days + " days";
+  }
+  function stockStatus(p) {
+    if (p.stock <= 0) return ["out", "Out of stock"];
+    if (p.stock <= p.reorderAt) return ["low", "Restock soon"];
+    return ["ok", "In stock"];
+  }
+
+  // ---------- render ----------
+  function render() {
+    const end = today(), start = addDays(end, -(state.days - 1));
+    const prevEnd = addDays(start, -1), prevStart = addDays(prevEnd, -(state.days - 1));
+    const cur = inRange(start, end), prev = inRange(prevStart, prevEnd);
+    const t = totals(cur), tp = totals(prev);
+
+    $("asof").textContent = niceDate(start) + " – " + niceDate(end) + " · " + state.products.size + " products";
+    $("kRev").textContent = money(t.rev); deltaText($("dRev"), t.rev, tp.rev);
+    $("kProfit").textContent = money(t.profit);
+    $("dProfit").className = "delta";
+    $("dProfit").textContent = t.rev ? (t.profit / t.rev * 100).toFixed(1) + "% margin" : "—";
+    $("kUnits").textContent = intf.format(t.units); deltaText($("dUnits"), t.units, tp.units);
+    const low = [...state.products.values()].filter((p) => stockStatus(p)[0] !== "ok");
+    $("kLow").textContent = intf.format(low.length);
+    $("dLow").className = "delta" + (low.length ? " down" : "");
+    $("dLow").textContent = low.length ? low.slice(0, 2).map((p) => p.name).join(", ") + (low.length > 2 ? " +" + (low.length - 2) : "") : "all stocked";
+
+    const hasExamples = [...state.products.values()].some((p) => p.example) || state.sales.some((s) => s.example);
+    $("exampleBanner").hidden = !hasExamples;
+
+    renderChart(start, end, cur);
+    renderTop(cur);
+    renderSales();
+    renderInventory();
+    renderProductSelect();
+  }
+
+  function renderChart(start, end, list) {
+    const byDay = new Map();
+    for (let d = start; d <= end; d = addDays(d, 1)) byDay.set(d, 0);
+    for (const s of list) byDay.set(s.date, (byDay.get(s.date) || 0) + s.qty * s.unitPrice);
+    const days = [...byDay.entries()];
+    const W = 720, H = 230, L = 58, R = 10, T = 12, B = 28;
+    const max = Math.max(...days.map((d) => d[1]), 0);
+    const step = niceStep(max / 4 || 1);
+    const top = Math.max(step * 4, step);
+    const y = (v) => T + (H - T - B) * (1 - v / top);
+    const bw = (W - L - R) / days.length;
+    let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Daily revenue, ${days.length} days">`;
+    for (let v = 0; v <= top + 1e-9; v += step) {
+      svg += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--grid)" stroke-width="1"/>`;
+      svg += `<text x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${esc(moneyShort(v))}</text>`;
+    }
+    const labelEvery = Math.ceil(days.length / 7);
+    days.forEach(([d, v], i) => {
+      const x = L + i * bw, h = (H - T - B) - (y(v) - T);
+      const isLast = i === days.length - 1;
+      if (v > 0) svg += `<rect x="${(x + bw * 0.15).toFixed(1)}" y="${y(v).toFixed(1)}" width="${(bw * 0.7).toFixed(1)}" height="${Math.max(h, 1).toFixed(1)}" rx="2" fill="var(--accent)" opacity="${isLast ? 1 : 0.78}"><title>${esc(niceDate(d))}: ${esc(money(v))}</title></rect>`;
+      if ((days.length - 1 - i) % labelEvery === 0) svg += `<text x="${(x + bw / 2).toFixed(1)}" y="${H - 8}" text-anchor="middle">${esc(niceDate(d))}</text>`;
+    });
+    svg += `</svg>`;
+    $("chart").innerHTML = svg;
+    const best = days.reduce((a, b) => (b[1] > a[1] ? b : a), ["", 0]);
+    $("chartNote").textContent = best[1] ? "Best day " + niceDate(best[0]) + " · " + money(best[1]) : "No sales in this range";
+  }
+  function niceStep(raw) {
+    const p = Math.pow(10, Math.floor(Math.log10(raw)));
+    const m = raw / p;
+    return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 2.5 ? 2.5 : m <= 5 ? 5 : 10) * p;
+  }
+  function esc(s) { return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+
+  function renderTop(list) {
+    const agg = new Map();
+    for (const s of list) {
+      const name = state.products.get(s.productId)?.name || s.productName || "Deleted product";
+      const a = agg.get(name) || { rev: 0, units: 0 };
+      a.rev += s.qty * s.unitPrice; a.units += s.qty; agg.set(name, a);
+    }
+    const rows = [...agg.entries()].sort((a, b) => b[1].rev - a[1].rev).slice(0, 6);
+    const ul = $("topList"); ul.replaceChildren();
+    if (!rows.length) { ul.append(el("li", { className: "empty", textContent: "No sales in this range yet." })); return; }
+    const max = rows[0][1].rev || 1;
+    for (const [name, a] of rows) {
+      const bar = el("i"); bar.style.width = Math.max(2, (a.rev / max) * 100) + "%";
+      ul.append(el("li", {},
+        el("div", { className: "top-row" }, el("span", { textContent: name }), el("span", { className: "num", textContent: money(a.rev) })),
+        el("div", { className: "meter" }, bar),
+        el("span", { className: "hint", textContent: intf.format(a.units) + " sold" })));
+    }
+  }
+
+  function confirmButton(label, onConfirm) {
+    const b = el("button", { type: "button", className: "link danger", textContent: label });
+    let armed = false, timer;
+    b.addEventListener("click", () => {
+      if (!armed) { armed = true; b.textContent = "Confirm?"; timer = setTimeout(() => { armed = false; b.textContent = label; }, 3000); return; }
+      clearTimeout(timer); onConfirm();
+    });
+    b.disabled = state.readOnly || !state.db;
+    return b;
+  }
+
+  function renderSales() {
+    const body = $("salesBody"); body.replaceChildren();
+    const recent = state.sales.slice(0, 15);
+    $("salesCount").textContent = state.sales.length ? intf.format(state.sales.length) + " recorded" : "";
+    if (!recent.length) { body.append(el("tr", {}, el("td", { colSpan: 5, className: "empty", textContent: "No sales yet. Record one on the left." }))); return; }
+    for (const s of recent) {
+      const name = state.products.get(s.productId)?.name || s.productName || "Deleted product";
+      const nameCell = el("td", {}, el("span", { className: "pname", textContent: name }));
+      if (s.example) nameCell.append(" ", el("span", { className: "pill ex", textContent: "example" }));
+      body.append(el("tr", {},
+        el("td", { className: "num", textContent: niceDate(s.date) }),
+        nameCell,
+        el("td", { className: "r num", textContent: intf.format(s.qty) }),
+        el("td", { className: "r num", textContent: money(s.qty * s.unitPrice) }),
+        el("td", {}, el("div", { className: "row-actions" }, confirmButton("Delete", () => deleteSale(s))))));
+    }
+  }
+
+  function renderInventory() {
+    const body = $("invBody"); body.replaceChildren();
+    const list = [...state.products.values()].sort((a, b) => {
+      const order = { out: 0, low: 1, ok: 2 };
+      return order[stockStatus(a)[0]] - order[stockStatus(b)[0]] || a.name.localeCompare(b.name);
+    });
+    $("invCount").textContent = list.length ? list.reduce((n, p) => n + Math.max(0, p.stock), 0).toLocaleString() + " units on hand" : "";
+    if (!list.length) { body.append(el("tr", {}, el("td", { colSpan: 7, className: "empty", textContent: "No products yet. Add your first one below." }))); return; }
+    for (const p of list) {
+      const [cls, text] = stockStatus(p);
+      const margin = p.price ? ((p.price - p.cost) / p.price) * 100 : 0;
+      const nameCell = el("td", {}, el("div", { className: "pname", textContent: p.name }));
+      const skuLine = el("div", { className: "sku", textContent: p.sku || "no SKU" });
+      if (p.example) skuLine.append(" ", el("span", { className: "pill ex", textContent: "example" }));
+      nameCell.append(skuLine);
+      const edit = el("button", { type: "button", className: "link", textContent: "Edit" });
+      edit.disabled = state.readOnly || !state.db;
+      edit.addEventListener("click", () => startEdit(p));
+      body.append(el("tr", {},
+        nameCell,
+        el("td", { className: "r num", textContent: money(p.price) }),
+        el("td", { className: "r num", textContent: money(p.cost) }),
+        el("td", { className: "r num", textContent: margin.toFixed(0) + "%" }),
+        el("td", { className: "r num", textContent: intf.format(p.stock) }),
+        el("td", {}, el("span", { className: "pill " + cls, textContent: text }), el("div", { className: "hint", textContent: "restock at " + p.reorderAt })),
+        el("td", {}, el("div", { className: "row-actions" }, edit, confirmButton("Delete", () => deleteProduct(p))))));
+    }
+  }
+
+  function renderProductSelect() {
+    const sel = $("sProduct"), prevVal = sel.value;
+    const list = [...state.products.values()].sort((a, b) => a.name.localeCompare(b.name));
+    sel.replaceChildren(...list.map((p) => el("option", { value: p.id, textContent: p.name + " (" + p.stock + " in stock)" })));
+    if (!list.length) sel.append(el("option", { value: "", textContent: "Add a product first" }));
+    if (list.some((p) => p.id === prevVal)) sel.value = prevVal;
+    else if (list.length) $("sPrice").value = list[0].price;
+    $("saleSubmit").disabled = !list.length || state.readOnly || !state.db;
+  }
+
+  // ---------- actions ----------
+  $("sProduct").addEventListener("change", () => { const p = state.products.get($("sProduct").value); if (p) $("sPrice").value = p.price; });
+
+  $("saleForm").addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const p = state.products.get($("sProduct").value);
+    const qty = parseInt($("sQty").value, 10), unitPrice = parseFloat($("sPrice").value), date = $("sDate").value;
+    if (!p || !(qty > 0) || !(unitPrice >= 0) || !date) return;
+    $("saleSubmit").disabled = true;
+    try {
+      await state.db.collection("sales").add({ productId: p.id, productName: p.name, qty, unitPrice, unitCost: p.cost, date, createdAt: Date.now() });
+      await state.db.doc("products/" + p.id).update({ stock: p.stock - qty });
+      $("sQty").value = 1;
+      toast("Sale recorded: " + qty + " × " + p.name);
+    } catch (e) { handleWriteError(e); }
+    $("saleSubmit").disabled = state.readOnly;
+  });
+
+  async function deleteSale(s) {
+    try {
+      await state.db.doc("sales/" + s.id).delete();
+      const p = state.products.get(s.productId);
+      if (p) await state.db.doc("products/" + p.id).update({ stock: p.stock + s.qty });
+      toast("Sale deleted and stock restored");
+    } catch (e) { handleWriteError(e); }
+  }
+
+  function startEdit(p) {
+    state.editing = p.id;
+    $("pName").value = p.name; $("pSku").value = p.sku || ""; $("pPrice").value = p.price; $("pCost").value = p.cost;
+    $("pStock").value = p.stock; $("pReorder").value = p.reorderAt;
+    $("productSubmit").textContent = "Save changes"; $("productCancel").hidden = false;
+    $("pName").focus();
+  }
+  function resetProductForm() {
+    state.editing = null; $("productForm").reset(); $("pReorder").value = 5;
+    $("productSubmit").textContent = "Add product"; $("productCancel").hidden = true;
+  }
+  $("productCancel").addEventListener("click", resetProductForm);
+
+  $("productForm").addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const data = {
+      name: $("pName").value.trim(), sku: $("pSku").value.trim(),
+      price: parseFloat($("pPrice").value), cost: parseFloat($("pCost").value),
+      stock: parseInt($("pStock").value, 10), reorderAt: parseInt($("pReorder").value, 10),
+    };
+    if (!data.name || [data.price, data.cost, data.stock, data.reorderAt].some((n) => Number.isNaN(n))) return;
+    $("productSubmit").disabled = true;
+    try {
+      if (state.editing) { await state.db.doc("products/" + state.editing).update(data); toast("Saved " + data.name); }
+      else { await state.db.collection("products").add({ ...data, createdAt: Date.now() }); toast("Added " + data.name); }
+      resetProductForm();
+    } catch (e) { handleWriteError(e); }
+    $("productSubmit").disabled = state.readOnly;
+  });
+
+  async function deleteProduct(p) {
+    try { await state.db.doc("products/" + p.id).delete(); if (state.editing === p.id) resetProductForm(); toast("Deleted " + p.name + ". Its past sales are kept."); }
+    catch (e) { handleWriteError(e); }
+  }
+
+  let clearArmed = false;
+  $("clearExamples").addEventListener("click", async () => {
+    const b = $("clearExamples");
+    if (!clearArmed) { clearArmed = true; b.textContent = "Delete all example rows?"; setTimeout(() => { clearArmed = false; b.textContent = "Clear examples"; }, 3500); return; }
+    clearArmed = false; b.disabled = true; b.textContent = "Clearing…";
+    try {
+      for (const s of state.sales.filter((x) => x.example)) await state.db.doc("sales/" + s.id).delete();
+      for (const p of [...state.products.values()].filter((x) => x.example)) await state.db.doc("products/" + p.id).delete();
+      toast("Examples cleared");
+    } catch (e) { handleWriteError(e); }
+    b.disabled = false; b.textContent = "Clear examples";
+  });
+
+  $("range").addEventListener("click", (ev) => {
+    const b = ev.target.closest("button[data-days]"); if (!b) return;
+    state.days = parseInt(b.dataset.days, 10);
+    try { localStorage.setItem("ledger.days", String(state.days)); } catch (e) {}
+    syncRange(); render();
+  });
+  function syncRange() { $("range").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.days === state.days))); }
+
+  $("currency").addEventListener("change", async () => {
+    state.currency = $("currency").value; render();
+    try { await state.db.doc("settings/main").set({ currency: state.currency }); } catch (e) { handleWriteError(e); }
+  });
+
+  // ---------- boot ----------
+  $("sDate").value = today();
+  syncRange(); render(); applyReadOnly();
+
+  (async () => {
+    const db = window.claude && window.claude.use ? await window.claude.use("db") : null;
+    if (!db) { $("offlineBanner").hidden = false; return; }
+    state.db = db; applyReadOnly();
+    const onErr = (e) => { if (e && e.code === "revoked") { state.db = null; applyReadOnly(); $("offlineBanner").hidden = false; } };
+    db.collection("products").onSnapshot((snap) => {
+      state.products = new Map(snap.docs.map((d) => { const v = d.data(); return [d.id, { id: d.id, name: String(v.name || "Untitled"), sku: v.sku || "", price: +v.price || 0, cost: +v.cost || 0, stock: Number.isFinite(+v.stock) ? +v.stock : 0, reorderAt: Number.isFinite(+v.reorderAt) ? +v.reorderAt : 0, example: !!v.example }]; }));
+      render();
+    }, onErr);
+    db.collection("sales").orderBy("date", "desc").limit(1000).onSnapshot((snap) => {
+      state.sales = snap.docs.map((d) => { const v = d.data(); return { id: d.id, productId: v.productId, productName: v.productName, qty: +v.qty || 0, unitPrice: +v.unitPrice || 0, unitCost: +v.unitCost || 0, date: String(v.date || ""), createdAt: v.createdAt || 0, example: !!v.example }; })
+        .sort((a, b) => (b.date.localeCompare(a.date)) || (b.createdAt - a.createdAt));
+      render();
+    }, onErr);
+    db.doc("settings/main").onSnapshot((snap) => {
+      const c = snap.exists && snap.data().currency;
+      if (c && c !== state.currency) { state.currency = c; $("currency").value = c; render(); }
+    }, onErr);
+  })();
+})();
+</script>
