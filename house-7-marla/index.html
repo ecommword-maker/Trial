@@ -1,0 +1,692 @@
+<title>7 Marla House</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg: #E9ECE6;
+    --panel: #F6F7F3;
+    --ink: #1C2427;
+    --muted: #5A6567;
+    --line: #CBD2CA;
+    --accent: #1D6B73;
+    --accent-ink: #FFFFFF;
+    --chip: #E1E6DF;
+    --sky: #D8E3E3;
+    --label-bg: rgba(246, 247, 243, 0.92);
+    --display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+    --body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #101618;
+      --panel: #172023;
+      --ink: #E2E8E5;
+      --muted: #93A09F;
+      --line: #29363A;
+      --accent: #5DB2B9;
+      --accent-ink: #0E1A1C;
+      --chip: #1F2A2D;
+      --sky: #1B2629;
+      --label-bg: rgba(23, 32, 35, 0.9);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #101618;
+    --panel: #172023;
+    --ink: #E2E8E5;
+    --muted: #93A09F;
+    --line: #29363A;
+    --accent: #5DB2B9;
+    --accent-ink: #0E1A1C;
+    --chip: #1F2A2D;
+    --sky: #1B2629;
+    --label-bg: rgba(23, 32, 35, 0.9);
+  }
+
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 14px/1.5 var(--body);
+    padding-inline: 16px;
+    padding-block: 16px;
+    box-sizing: border-box;
+  }
+  .app {
+    height: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 380px;
+    gap: 16px;
+  }
+  .stage {
+    position: relative;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--sky);
+    min-height: 320px;
+  }
+  .stage canvas { display: block; }
+  .stage-bar {
+    position: absolute;
+    top: 12px; left: 12px; right: 12px;
+    display: flex; flex-wrap: wrap; gap: 8px;
+    justify-content: space-between;
+    pointer-events: none;
+    z-index: 3;
+  }
+  .stage-bar > * { pointer-events: auto; }
+  .seg {
+    display: inline-flex;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .seg button, .tog {
+    font: 600 13px/1 var(--display);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: transparent;
+    border: 0;
+    border-radius: 3px;
+    padding: 8px 11px;
+    cursor: pointer;
+  }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+  .seg button:hover:not([aria-pressed="true"]), .tog:hover { color: var(--ink); }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .tog[aria-pressed="true"] { color: var(--accent); }
+  .hint {
+    position: absolute; left: 12px; bottom: 10px;
+    font: 400 11px/1.3 var(--mono);
+    color: var(--muted);
+    background: var(--label-bg);
+    padding: 4px 7px; border-radius: 3px;
+    z-index: 3;
+  }
+  .lbl {
+    font: 600 11px/1.2 var(--body);
+    color: var(--ink);
+    background: var(--label-bg);
+    border: 1px solid var(--line);
+    padding: 3px 6px 3px;
+    border-radius: 3px;
+    text-align: center;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .lbl small { display: block; font: 400 10px/1.2 var(--mono); color: var(--muted); }
+  .lbl.dim { background: transparent; border: 0; font: 500 12px/1 var(--mono); color: var(--ink); }
+
+  aside {
+    overflow-y: auto;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding-inline: 20px;
+    padding-block: 20px;
+    display: flex; flex-direction: column; gap: 22px;
+  }
+  .eyebrow {
+    font: 600 12px/1 var(--display);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  h1 {
+    font: 700 40px/0.95 var(--display);
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    margin: 6px 0 8px;
+    text-wrap: balance;
+  }
+  h2 {
+    font: 600 15px/1 var(--display);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 0 0 10px;
+    color: var(--muted);
+  }
+  p { margin: 0; color: var(--muted); max-width: 62ch; }
+  .facts {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  }
+  .facts div { padding-block: 10px; padding-inline: 0 8px; }
+  .facts div + div { border-left: 1px solid var(--line); padding-left: 10px; }
+  .facts b { display: block; font: 500 18px/1.1 var(--mono); font-variant-numeric: tabular-nums; }
+  .facts span { font-size: 11px; color: var(--muted); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th {
+    text-align: left;
+    font: 600 12px/1 var(--display); letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent);
+    padding-block: 12px 6px;
+  }
+  td { padding-block: 5px; border-bottom: 1px solid var(--line); }
+  td.n { font: 400 12px var(--mono); font-variant-numeric: tabular-nums; text-align: right; color: var(--muted); white-space: nowrap; }
+  tr.tot td { border-bottom: 0; font-weight: 600; }
+  tr.tot td.n { color: var(--ink); }
+  dl { margin: 0; display: grid; gap: 12px; }
+  dt { font-weight: 600; font-size: 13px; }
+  dd { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+  .note {
+    font-size: 12.5px; color: var(--ink);
+    background: var(--chip);
+    border-radius: 4px;
+    padding: 10px 12px;
+  }
+
+  @media (max-width: 880px) {
+    html, body { height: auto; }
+    .app { grid-template-columns: 1fr; height: auto; }
+    .stage { height: 64svh; }
+    aside { overflow: visible; }
+    h1 { font-size: 34px; }
+  }
+</style>
+
+<div class="app">
+  <div class="stage" id="stage">
+    <div class="stage-bar">
+      <div class="seg" role="group" aria-label="Floor">
+        <button id="v-ext" data-mode="exterior" aria-pressed="true">Exterior</button>
+        <button id="v-gf" data-mode="ground" aria-pressed="false">Ground</button>
+        <button id="v-ff" data-mode="first" aria-pressed="false">First</button>
+        <button id="v-rf" data-mode="roof" aria-pressed="false">Roof</button>
+      </div>
+      <div class="seg" role="group" aria-label="Display options">
+        <button class="tog" id="t-top" aria-pressed="false">Top view</button>
+        <button class="tog" id="t-lbl" aria-pressed="true">Labels</button>
+        <button class="tog" id="t-fur" aria-pressed="true">Furniture</button>
+      </div>
+    </div>
+    <div class="hint">Drag to rotate · scroll or pinch to zoom · right-drag to pan</div>
+  </div>
+
+  <aside>
+    <header>
+      <div class="eyebrow">Double storey · 35′ × 45′ plot</div>
+      <h1>7 Marla House</h1>
+      <p>Four bedrooms with attached baths, a separate drawing room for guests, open kitchen, car porch, and a rear courtyard that brings light and cross-ventilation into the middle of the house.</p>
+    </header>
+
+    <div class="facts">
+      <div><b>1,575</b><span>sq ft plot</span></div>
+      <div><b id="f-cov">–</b><span>sq ft covered</span></div>
+      <div><b>4 + 1</b><span>beds + drawing</span></div>
+    </div>
+
+    <section>
+      <h2>Room schedule</h2>
+      <table id="sched"></table>
+    </section>
+
+    <section>
+      <h2>Engineering notes</h2>
+      <dl>
+        <div><dt>Setbacks and open space</dt><dd>6′ front lawn plus a 12′ × 20′ car porch. The 13′ × 11′ rear courtyard is open to the sky, so the kitchen, bedrooms and lounges get daylight even with party walls on both sides.</dd></div>
+        <div><dt>Levels</dt><dd>Plinth 1′-6″ above road level to keep out rain water. 11′ floor to floor, 10′-6″ clear ceiling, 6″ RCC slabs.</dd></div>
+        <div><dt>Structure</dt><dd>RCC frame with 12″ × 12″ columns at about 15′ spacing. Walls are 9″ brick outside and 4½″ inside. Upper-floor partitions that don't sit on a wall below are carried on beams.</dd></div>
+        <div><dt>Plumbing stacked</dt><dd>Every first-floor bath sits directly above a ground-floor bath, so each pair shares one vertical shaft. That means fewer pipes, fewer leaks and easier repairs.</dd></div>
+        <div><dt>Staircase</dt><dd>Dog-leg stair, 4′ wide flights, 22 risers of 6″ with 10″ treads, continuing to a mumty on the roof.</dd></div>
+        <div><dt>Light and air</dt><dd>Every bedroom has an outside window or balcony door. The first-floor bath behind Bedroom 2 is internal and needs an exhaust duct to the roof.</dd></div>
+        <div><dt>Roof</dt><dd>Room for about 10 × 550 W solar panels (≈5.5 kW) and a 1,000 L water tank on the mumty. Use brick-tile heat-proofing with foam insulation over the slab.</dd></div>
+      </dl>
+    </section>
+
+    <p class="note">The plot size assumes 1 marla = 225 sq ft (LDA, DHA and most societies). If your society uses 272 sq ft, 7 marla is about 1,906 sq ft and the plan stretches in depth. Check setbacks and covered-area limits with your authority, and have a licensed structural engineer size the footings, columns and steel from a soil test before you build.</p>
+  </aside>
+</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+// Units: 1 = 1 foot. Road side is -z; plot runs x 0..35, z 0..45.
+const FH = 11, SLAB = 0.5, WH = FH - SLAB;
+const L0 = 1.5, L1 = L0 + FH, L2 = L1 + FH;   // finished floor levels
+const EXT = 0.75, INT = 0.45;                  // 9" and 4.5" walls
+
+const stage = document.getElementById('stage');
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+stage.appendChild(renderer.domElement);
+
+const labelRenderer = new CSS2DRenderer();
+labelRenderer.domElement.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:2';
+stage.appendChild(labelRenderer.domElement);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(40, 1, 0.5, 900);
+camera.position.set(-32, 40, -50);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(17.5, 9, 22.5);
+controls.enableDamping = true;
+controls.maxPolarAngle = Math.PI * 0.49;
+controls.minDistance = 12;
+controls.maxDistance = 220;
+
+// Lighting
+scene.add(new THREE.HemisphereLight(0xf4f7ff, 0x8a8470, 1.1));
+const sun = new THREE.DirectionalLight(0xfff3e0, 2.2);
+sun.position.set(-45, 80, -35);
+sun.target.position.set(17.5, 0, 22.5);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -55, right: 55, top: 55, bottom: -55, near: 10, far: 220 });
+sun.shadow.bias = -0.0004;
+scene.add(sun, sun.target);
+
+// Materials
+const mat = (color, o = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.85, ...o });
+const M = {
+  plaster: mat(0xEEEAE3), partition: mat(0xF3F0EA), slab: mat(0xD4D0C8),
+  stone: mat(0x5F666B, { roughness: 0.7 }), brick: mat(0xA65B3D),
+  glass: mat(0x8FB8CC, { transparent: true, opacity: 0.38, roughness: 0.05, metalness: 0.2 }),
+  rail: mat(0xA9CBD8, { transparent: true, opacity: 0.3, roughness: 0.05 }),
+  steel: mat(0x2A2F33, { roughness: 0.5, metalness: 0.5 }),
+  living: mat(0xDCD5C8), bed: mat(0xC4A983), bath: mat(0xBFD2D8), kitchen: mat(0xD9D1C2),
+  porch: mat(0x9B978F), lawn: mat(0x6E9A4C), court: mat(0xB9B2A4), terrace: mat(0xC7B9A5),
+  stair: mat(0xCFC8BB), ground: mat(0xB9BBA9), road: mat(0x3B4043), path: mat(0xBDB7AB),
+  wood: mat(0x7E5537), fabric: mat(0x4F6A70), fabric2: mat(0x8C7A66), linen: mat(0xF2EFEA),
+  counter: mat(0x33383B, { roughness: 0.4 }), white: mat(0xF6F6F4), car: mat(0xB8BEC4, { metalness: 0.6, roughness: 0.35 }),
+  tyre: mat(0x1D1F21), leaf: mat(0x4E7D3A), trunk: mat(0x6B4E36), tank: mat(0x2E3A44),
+  solar: mat(0x1E3550, { roughness: 0.25, metalness: 0.4 }), ghost: mat(0xC8C9C0, { transparent: true, opacity: 0.35 }),
+  mark: mat(0xE8E4DA)
+};
+
+const groups = { site: new THREE.Group(), g0: new THREE.Group(), g1: new THREE.Group(), g2: new THREE.Group(), fur: [] };
+scene.add(groups.site, groups.g0, groups.g1, groups.g2);
+const byFloor = [groups.g0, groups.g1, groups.g2];
+const G = groups.g0, F = groups.g1, R = groups.g2;
+
+function box(g, x1, y1, z1, x2, y2, z2, m, shadow = true) {
+  const mesh = new THREE.Mesh(new THREE.BoxGeometry(Math.abs(x2 - x1), Math.abs(y2 - y1), Math.abs(z2 - z1)), m);
+  mesh.position.set((x1 + x2) / 2, (y1 + y2) / 2, (z1 + z2) / 2);
+  mesh.castShadow = shadow; mesh.receiveShadow = true;
+  g.add(mesh);
+  return mesh;
+}
+
+// Wall along an axis with door/window openings.
+// axis 'x' runs along x at z = c; axis 'z' runs along z at x = c. Openings: {o: offset from a, w, sill, head}
+function wall(g, base, axis, c, a, b, t, ops = [], h = WH, m = M.plaster) {
+  const seg = (s, e, y1, y2, mm = m, tt = t, sh = true) => {
+    if (e - s < 0.01 || y2 - y1 < 0.01) return;
+    if (axis === 'x') box(g, s, base + y1, c - tt / 2, e, base + y2, c + tt / 2, mm, sh);
+    else box(g, c - tt / 2, base + y1, s, c + tt / 2, base + y2, e, mm, sh);
+  };
+  let cur = a - t / 2;
+  [...ops].sort((p, q) => p.o - q.o).forEach(op => {
+    const s = a + op.o, e = s + op.w, sill = op.sill ?? 0, head = Math.min(op.head ?? 7, h);
+    seg(cur, s, 0, h);
+    seg(s, e, 0, sill);
+    seg(s, e, head, h);
+    if (sill > 0) {
+      seg(s, e, sill, head, M.glass, 0.08, false);
+      seg(s - 0.1, e + 0.1, sill - 0.12, sill, M.steel, t + 0.25);
+    }
+    cur = e;
+  });
+  seg(cur, b + t / 2, 0, h);
+}
+
+function slab(g, top, rects, m = M.slab) {
+  rects.forEach(([x1, z1, x2, z2]) => box(g, x1, top - SLAB, z1, x2, top, z2, m));
+}
+
+// ---------- Rooms ----------
+const rooms = [
+  { f: 0, n: 'Car Porch', r: [0, 0, 12, 20], k: 'porch', open: true },
+  { f: 0, n: 'Front Lawn', r: [12, 0, 35, 6], k: 'lawn', open: true },
+  { f: 0, n: 'Drawing Room', r: [12, 6, 26, 20], k: 'living' },
+  { f: 0, n: 'Guest Bath', r: [26, 6, 35, 12], k: 'bath' },
+  { f: 0, n: 'Stair', r: [26, 12, 35, 24], k: 'stair' },
+  { f: 0, n: 'Lounge + Dining', r: [0, 20, 22, 34], k: 'living' },
+  { f: 0, n: 'Lobby', r: [22, 20, 26, 24], k: 'living', hide: true },
+  { f: 0, n: 'Open Kitchen', r: [22, 24, 35, 34], k: 'kitchen' },
+  { f: 0, n: 'Bedroom 1', r: [0, 34, 15, 45], k: 'bed' },
+  { f: 0, n: 'Bath', r: [15, 34, 22, 41], k: 'bath' },
+  { f: 0, n: 'Dressing', r: [15, 41, 22, 45], k: 'bed' },
+  { f: 0, n: 'Courtyard', r: [22, 34, 35, 45], k: 'court', open: true },
+
+  { f: 1, n: 'Balcony', r: [0, 2, 26, 6], k: 'terrace', open: true },
+  { f: 1, n: 'Bedroom 2', r: [0, 6, 12, 20], k: 'bed' },
+  { f: 1, n: 'Bedroom 3', r: [12, 6, 26, 20], k: 'bed' },
+  { f: 1, n: 'Bath', r: [26, 6, 35, 12], k: 'bath' },
+  { f: 1, n: 'Stair', r: [26, 12, 35, 24], k: 'stair' },
+  { f: 1, n: 'Bath', r: [0, 20, 7, 27], k: 'bath' },
+  { f: 1, n: 'Store', r: [0, 27, 7, 34], k: 'kitchen' },
+  { f: 1, n: 'Family Lounge', r: [7, 20, 22, 34], k: 'living' },
+  { f: 1, n: 'Lobby', r: [22, 20, 26, 24], k: 'living', hide: true },
+  { f: 1, n: 'Terrace', r: [22, 24, 35, 34], k: 'terrace', open: true },
+  { f: 1, n: 'Master Bedroom', r: [0, 34, 15, 45], k: 'bed' },
+  { f: 1, n: 'Bath', r: [15, 34, 22, 41], k: 'bath' },
+  { f: 1, n: 'Dressing', r: [15, 41, 22, 45], k: 'bed' },
+];
+
+const labels = [];
+function addLabel(floor, text, sub, x, y, z, cls = 'lbl') {
+  const el = document.createElement('div');
+  el.className = cls;
+  el.textContent = text;
+  if (sub) { const s = document.createElement('small'); s.textContent = sub; el.appendChild(s); }
+  const obj = new CSS2DObject(el);
+  obj.position.set(x, y, z);
+  scene.add(obj);
+  labels.push({ obj, floor });
+}
+
+const floorY = { porch: 0.6, lawn: 0.5, court: L0 - 0.3 };
+rooms.forEach(rm => {
+  const [x1, z1, x2, z2] = rm.r;
+  const base = rm.f === 0 ? (floorY[rm.k] ?? L0) : L1;
+  if (rm.k !== 'stair') box(byFloor[rm.f], x1, base, z1, x2, base + 0.04, z2, M[rm.k], false);
+  if (!rm.hide) addLabel(rm.f, rm.n, `${x2 - x1}′ × ${z2 - z1}′`, (x1 + x2) / 2, base + 1, (z1 + z2) / 2);
+});
+
+// ---------- Site ----------
+const S = groups.site;
+box(S, -120, -0.3, -60, 160, 0, 140, M.ground, false);
+box(S, -120, 0, -32, 160, 0.05, -6, M.road, false);
+box(S, -120, 0, -6, 160, 0.3, 0, M.path, false);
+for (let x = -110; x < 150; x += 14) box(S, x, 0.05, -19.2, x + 7, 0.08, -18.8, M.mark, false);
+// neighbours (attached houses)
+box(S, -36, 0, 6, -0.4, 23.5, 45, M.ghost, false);
+box(S, 35.4, 0, 6, 71, 23.5, 45, M.ghost, false);
+// dimension lines
+box(S, 0, 0.32, -2.2, 35, 0.36, -2.0, M.steel, false);
+box(S, -2.2, 0.32, 0, -2.0, 0.36, 45, M.steel, false);
+addLabel('dim', '35′-0″', '', 17.5, 0.5, -3.2, 'lbl dim');
+addLabel('dim', '45′-0″', '', -4.2, 0.5, 22.5, 'lbl dim');
+addLabel('dim', 'ROAD', '', 17.5, 0.2, -14, 'lbl dim');
+
+// Boundary walls and gates
+wall(S, 0, 'x', 0, 0, 35, 0.75, [{ o: 0.5, w: 11, head: 9 }, { o: 12.5, w: 3.5, head: 9 }], 4, M.stone);
+wall(S, 0, 'z', 0, 0, 20, 0.75, [], 7, M.stone);
+wall(S, 0, 'z', 35, 0, 6, 0.75, [], 7, M.stone);
+box(S, 0.6, 0.3, -0.25, 6.2, 6, 0.1, M.steel);          // sliding gate, half open
+box(S, 12.5, 0.3, -0.2, 15.9, 6, 0.1, M.steel);          // pedestrian gate
+box(S, 14.5, 0.51, 0.5, 16, 0.56, 6, M.path, false);     // stepping path
+
+// ---------- Ground floor ----------
+box(G, 0, 0, 6, 35, L0 - 0.05, 45, M.slab);   // plinth
+box(G, 0, 0, 0, 12, 0.58, 20, M.porch, true);  // porch base
+// external
+wall(G, L0, 'x', 6, 12, 35, EXT, [{ o: 3, w: 7, sill: 2.5, head: 8.5 }, { o: 17.5, w: 2, sill: 5.5, head: 7 }]);
+wall(G, L0, 'z', 0, 20, 45, EXT);
+wall(G, L0, 'z', 35, 6, 34, EXT);
+wall(G, L0, 'z', 35, 34, 45, EXT, [], WH, M.stone);          // courtyard boundary
+wall(G, L0, 'x', 45, 0, 22, EXT, [{ o: 4, w: 6, sill: 3, head: 7.5 }, { o: 17, w: 2, sill: 5.5, head: 7 }]);
+wall(G, L0, 'x', 45, 22, 35, EXT, [], WH, M.stone);
+wall(G, L0, 'z', 22, 34, 45, EXT, [{ o: 2.5, w: 2, sill: 5.5, head: 7 }]);
+wall(G, L0, 'z', 12, 6, 20, EXT, [{ o: 3, w: 3.5, head: 7.5 }]);                              // drawing entry from porch
+wall(G, L0, 'x', 20, 0, 12, EXT, [{ o: 3.5, w: 4, head: 8 }, { o: 8.5, w: 3, sill: 3, head: 7.5 }]); // main door + window
+// internal
+wall(G, L0, 'x', 20, 12, 26, INT, [{ o: 7, w: 3 }], WH, M.partition);
+wall(G, L0, 'z', 26, 6, 24, INT, [{ o: 2, w: 2.5 }, { o: 14, w: 4, head: 8 }], WH, M.partition);
+wall(G, L0, 'x', 12, 26, 35, INT, [], WH, M.partition);
+wall(G, L0, 'x', 24, 22, 35, INT, [], WH, M.partition);
+wall(G, L0, 'z', 22, 24, 34, INT, [{ o: 1, w: 8, head: 8 }], WH, M.partition);              // open kitchen arch
+wall(G, L0, 'x', 34, 0, 35, INT, [{ o: 10, w: 3.5 }, { o: 24, w: 4, sill: 3.5, head: 7 }, { o: 30, w: 3 }], WH, M.partition);
+wall(G, L0, 'z', 15, 34, 45, INT, [{ o: 1, w: 2.5 }, { o: 7.5, w: 2.5 }], WH, M.partition);
+wall(G, L0, 'x', 41, 15, 22, INT, [], WH, M.partition);
+// brick cladding on the front face (bath strip) and slab
+box(G, 26, L0, 5.45, 35, L1, 5.6, M.brick);
+slab(F, L1, [[0, 2, 26, 6], [0, 6, 35, 12], [0, 12, 26, 24], [26, 20, 30.5, 24], [0, 24, 35, 34], [0, 34, 22, 45]]);
+
+// Dog-leg stair: 11 + 11 risers of 6"
+function stair(g, base) {
+  const T = 9.17 / 11, R = 0.5;
+  for (let i = 0; i < 11; i++) {
+    const z2 = 23.5 - i * T;
+    box(g, 26.4, base, z2 - T, 30.4, base + (i + 1) * R, z2, M.stair);
+  }
+  const land = 23.5 - 11 * T;
+  box(g, 26.4, base + 5, 12.4, 34.6, base + 5.5, land, M.stair);
+  for (let i = 0; i < 11; i++) {
+    const z1 = land + i * T;
+    box(g, 30.6, base + 5.5, z1, 34.6, base + 5.5 + (i + 1) * R, z1 + T, M.stair);
+  }
+  box(g, 30.5, base + 0.2, 12.4, 30.6, base + FH, 23.5, M.partition); // mid wall
+}
+stair(G, L0);
+
+// ---------- First floor ----------
+wall(F, L1, 'x', 6, 0, 35, EXT, [{ o: 3, w: 6, head: 8 }, { o: 16, w: 6, head: 8 }, { o: 29.5, w: 2, sill: 5.5, head: 7 }]);
+wall(F, L1, 'z', 0, 6, 45, EXT);
+wall(F, L1, 'z', 35, 6, 24, EXT);
+wall(F, L1, 'x', 24, 22, 35, EXT, [{ o: 0.5, w: 3, head: 7.5 }, { o: 8, w: 3, sill: 4, head: 7.5 }]);
+wall(F, L1, 'z', 22, 24, 45, EXT, [{ o: 2, w: 6, head: 8 }, { o: 12.5, w: 2, sill: 5.5, head: 7 }, { o: 18, w: 2, sill: 4, head: 7 }]);
+wall(F, L1, 'x', 45, 0, 22, EXT, [{ o: 3, w: 6, sill: 3, head: 7.5 }, { o: 17, w: 2, sill: 5.5, head: 7 }]);
+wall(F, L1, 'x', 20, 0, 26, INT, [{ o: 2, w: 2.5 }, { o: 8.5, w: 3 }, { o: 17, w: 3 }], WH, M.partition);
+wall(F, L1, 'x', 27, 0, 7, INT, [], WH, M.partition);
+wall(F, L1, 'z', 7, 20, 34, INT, [{ o: 9, w: 2.5 }], WH, M.partition);
+wall(F, L1, 'z', 12, 6, 20, INT, [], WH, M.partition);
+wall(F, L1, 'z', 26, 6, 24, INT, [{ o: 1, w: 2.5 }, { o: 14, w: 4, head: 8 }], WH, M.partition);
+wall(F, L1, 'x', 12, 26, 35, INT, [], WH, M.partition);
+wall(F, L1, 'x', 34, 0, 22, INT, [{ o: 10, w: 3.5 }], WH, M.partition);
+wall(F, L1, 'z', 15, 34, 45, INT, [{ o: 1, w: 2.5 }, { o: 7.5, w: 2.5 }], WH, M.partition);
+wall(F, L1, 'x', 41, 15, 22, INT, [], WH, M.partition);
+// terrace parapets, courtyard railing, balcony railing
+wall(F, L1, 'z', 35, 24, 45, 0.6, [], 3.5, M.stone);
+wall(F, L1, 'x', 45, 22, 35, 0.6, [], 3.5, M.stone);
+box(F, 22, L1, 33.95, 35, L1 + 3.3, 34.05, M.rail, false);
+box(F, 22, L1 + 3.3, 33.9, 35, L1 + 3.5, 34.1, M.steel);
+box(F, 0, L1, 2.05, 26, L1 + 3.3, 2.15, M.rail, false);
+box(F, 0, L1 + 3.3, 2, 26, L1 + 3.5, 2.2, M.steel);
+box(F, 26, L1 - SLAB, 2, 26.8, L2 + 3.5, 6, M.stone);   // front fin
+box(F, 26, L1, 5.45, 35, L2, 5.6, M.brick);
+slab(R, L2, [[0, 2, 26.8, 6], [0, 6, 35, 12], [0, 12, 26, 24], [26, 20, 30.5, 24], [0, 24, 22, 45]]);
+box(R, -0.3, L2 - 1.2, 1.7, 26.8, L2 + 0.3, 2.2, M.stone);   // fascia over balcony
+stair(F, L1);
+
+// ---------- Roof ----------
+[['x', 6, 0, 35], ['z', 35, 6, 24], ['x', 24, 22, 26], ['z', 22, 24, 45], ['x', 45, 0, 22], ['z', 0, 6, 45]]
+  .forEach(([ax, c, a, b]) => wall(R, L2, ax, c, a, b, 0.6, [], 3.5, M.plaster));
+wall(R, L2, 'z', 26, 12, 24, EXT, [{ o: 8, w: 3.5, head: 7.5 }], 9);
+wall(R, L2, 'z', 35, 12, 24, EXT, [], 9);
+wall(R, L2, 'x', 12, 26, 35, EXT, [], 9);
+wall(R, L2, 'x', 24, 26, 35, EXT, [], 9);
+box(R, 25.5, L2 + 9, 11.5, 35.3, L2 + 9.5, 24.5, M.slab);
+const tank = new THREE.Mesh(new THREE.CylinderGeometry(2, 2, 4.2, 28), M.tank);
+tank.position.set(31, L2 + 9.5 + 2.1, 16.5); tank.castShadow = true; R.add(tank);
+// solar array tilted to face south (+z)
+for (let row = 0; row < 2; row++) for (let i = 0; i < 5; i++) {
+  const p = new THREE.Mesh(new THREE.BoxGeometry(3.3, 0.12, 5.6), M.solar);
+  p.position.set(2.2 + i * 3.6 + 1.65, L2 + 2.2, 28.5 + row * 8.5);
+  p.rotation.x = -0.35; p.castShadow = true; R.add(p);
+  box(R, p.position.x - 0.1, L2, p.position.z - 2, p.position.x + 0.1, L2 + 1.4, p.position.z - 1.8, M.steel);
+  box(R, p.position.x - 0.1, L2, p.position.z + 1.8, p.position.x + 0.1, L2 + 3, p.position.z + 2, M.steel);
+}
+addLabel(2, 'Mumty + stair', '9′ × 12′', 30.5, L2 + 10.5, 21.5);
+addLabel(2, 'Water tank', '1,000 L', 31, L2 + 15, 16.5);
+addLabel(2, 'Solar array', '10 × 550 W', 11, L2 + 5, 33);
+addLabel(2, 'Open roof', 'heat-proofed', 12, L2 + 1, 15);
+
+// ---------- Furniture and landscape ----------
+function fur(g, ...a) { const m = box(g, ...a); groups.fur.push(m); return m; }
+function bed(g, y, x1, z1, x2, z2, head) {
+  fur(g, x1, y, z1, x2, y + 1.2, z2, M.wood);
+  fur(g, x1 + 0.1, y + 1.2, z1 + 0.1, x2 - 0.1, y + 1.9, z2 - 0.1, M.linen);
+  if (head === 'x-') { fur(g, x1 - 0.3, y, z1, x1, y + 3.6, z2, M.wood); fur(g, x1 + 0.3, y + 1.9, z1 + 0.5, x1 + 1.6, y + 2.3, z2 - 0.5, M.white); fur(g, x1 + 2.8, y + 1.92, z1 + 0.1, x2 - 0.1, y + 2.0, z2 - 0.1, M.fabric); }
+  if (head === 'x+') { fur(g, x2, y, z1, x2 + 0.3, y + 3.6, z2, M.wood); fur(g, x2 - 1.6, y + 1.9, z1 + 0.5, x2 - 0.3, y + 2.3, z2 - 0.5, M.white); fur(g, x1 + 0.1, y + 1.92, z1 + 0.1, x2 - 2.8, y + 2.0, z2 - 0.1, M.fabric); }
+}
+function sofa(g, y, x1, z1, x2, z2, m = M.fabric) {
+  fur(g, x1, y, z1, x2, y + 1.5, z2, m);
+  const dx = x2 - x1, dz = z2 - z1;
+  if (dx < dz) fur(g, x1, y + 1.5, z1, x1 + 0.8, y + 2.8, z2, m); else fur(g, x1, y + 1.5, z2 - 0.8, x2, y + 2.8, z2, m);
+}
+function table(g, y, x1, z1, x2, z2, h = 2.5) {
+  fur(g, x1, y + h - 0.15, z1, x2, y + h, z2, M.wood);
+  fur(g, x1 + 0.2, y, z1 + 0.2, x2 - 0.2, y + h - 0.15, z2 - 0.2, M.counter);
+}
+function tree(g, x, z, y = 0.5, s = 1) {
+  const t = new THREE.Mesh(new THREE.CylinderGeometry(0.25 * s, 0.35 * s, 6 * s, 8), M.trunk);
+  t.position.set(x, y + 3 * s, z); t.castShadow = true; g.add(t);
+  const c = new THREE.Mesh(new THREE.IcosahedronGeometry(3 * s, 1), M.leaf);
+  c.position.set(x, y + 7 * s, z); c.castShadow = true; g.add(c);
+}
+
+// car in porch
+fur(G, 3.1, 1.3, 3.5, 8.9, 3.6, 18, M.car);
+fur(G, 3.5, 3.6, 7.5, 8.5, 5.2, 14.5, M.car);
+[[3.1, 5.8], [3.1, 15.8], [8.9, 5.8], [8.9, 15.8]].forEach(([x, z]) => {
+  const w = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.1, 0.8, 16), M.tyre);
+  w.rotation.z = Math.PI / 2; w.position.set(x, 1.7, z); w.castShadow = true; G.add(w); groups.fur.push(w);
+});
+// drawing room
+sofa(G, L0, 13, 17.4, 19, 19.6, M.fabric2);
+sofa(G, L0, 23.6, 11.5, 25.6, 18.5, M.fabric2);
+table(G, L0, 17, 12.5, 21, 15, 1.4);
+// lounge + dining, with media wall
+sofa(G, L0, 0.5, 23, 3, 31);
+table(G, L0, 4.5, 25, 7, 29, 1.4);
+fur(G, 10.5, L0, 24, 11.1, L0 + 7, 31, M.wood);
+table(G, L0, 14, 26, 20, 30);
+for (let i = 0; i < 3; i++) { fur(G, 14.5 + i * 2, L0, 24.8, 15.8 + i * 2, L0 + 1.5, 25.8, M.fabric2); fur(G, 14.5 + i * 2, L0, 30.2, 15.8 + i * 2, L0 + 1.5, 31.2, M.fabric2); }
+// kitchen
+fur(G, 22.3, L0, 24.3, 35, L0 + 2.9, 26.3, M.white);
+fur(G, 22.3, L0 + 2.9, 24.3, 35, L0 + 3.1, 26.3, M.counter);
+fur(G, 32.7, L0, 26.3, 34.7, L0 + 2.9, 33.5, M.white);
+fur(G, 32.7, L0 + 2.9, 26.3, 34.7, L0 + 3.1, 33.5, M.counter);
+fur(G, 25, L0, 29, 30, L0 + 3, 31.5, M.counter);   // island
+// bedroom 1
+bed(G, L0, 0.6, 37, 7, 43, 'x-');
+fur(G, 0.5, L0, 34.3, 8, L0 + 7, 36.2, M.wood);
+// courtyard and lawn
+tree(G, 31, 41, L0 - 0.3, 0.9);
+box(G, 23, L0 - 0.3, 43, 29, L0 + 1.2, 44.6, M.leaf);
+tree(S, 30, 3, 0.5, 0.8);
+box(S, 18, 0.5, 0.5, 34.5, 2.2, 1.6, M.leaf);
+
+// first floor furniture
+bed(F, L1, 0.6, 10, 7, 16, 'x-');
+fur(F, 9.8, L1, 12.5, 11.7, L1 + 7, 19.6, M.wood);
+bed(F, L1, 19.4, 11, 25.6, 17, 'x+');
+fur(F, 12.3, L1, 12, 14.2, L1 + 7, 19.6, M.wood);
+bed(F, L1, 0.6, 37, 7, 43, 'x-');
+fur(F, 0.5, L1, 34.3, 8, L1 + 7, 36.2, M.wood);
+sofa(F, L1, 7.5, 22, 10, 29);
+table(F, L1, 11.5, 23.5, 14, 27.5, 1.4);
+fur(F, 19.8, L1, 22, 20.6, L1 + 2, 29, M.wood);
+table(F, L1, 27, 27, 30, 30, 2.4);
+fur(F, 26, L1, 30.6, 27.5, L1 + 2.5, 32, M.fabric2);
+fur(F, 29.5, L1, 30.6, 31, L1 + 2.5, 32, M.fabric2);
+tree(F, 33, 26, L1, 0.45);
+
+// ---------- Theme ----------
+function applyTheme() {
+  const sky = getComputedStyle(document.documentElement).getPropertyValue('--sky').trim() || '#D8E3E3';
+  scene.background = new THREE.Color(sky);
+  const dark = new THREE.Color(sky).getHSL({}).l < 0.4;
+  scene.fog = new THREE.Fog(sky, 160, 420);
+  M.ground.color.set(dark ? 0x565a50 : 0xB9BBA9);
+}
+applyTheme();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
+new MutationObserver(applyTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+// ---------- Schedule ----------
+(function schedule() {
+  const tbl = document.getElementById('sched');
+  const fmt = n => n.toLocaleString('en-US');
+  let covered = 0;
+  const rowsFor = (f, title) => {
+    let html = `<tr><th colspan="2">${title}</th></tr>`;
+    rooms.filter(r => r.f === f && !r.hide).forEach(r => {
+      const w = r.r[2] - r.r[0], d = r.r[3] - r.r[1];
+      html += `<tr><td>${r.n}${r.open ? ' <span style="color:var(--muted)">(open)</span>' : ''}</td><td class="n">${w}′ × ${d}′ · ${fmt(w * d)} ft²</td></tr>`;
+    });
+    rooms.filter(r => r.f === f && !r.open).forEach(r => { covered += (r.r[2] - r.r[0]) * (r.r[3] - r.r[1]); });
+    return html;
+  };
+  tbl.innerHTML = rowsFor(0, 'Ground floor') + rowsFor(1, 'First floor') +
+    `<tr class="tot"><td>Total covered (excl. porch, balcony, terrace)</td><td class="n" id="t-cov"></td></tr>`;
+  document.getElementById('t-cov').textContent = `${fmt(covered)} ft²`;
+  document.getElementById('f-cov').textContent = fmt(covered);
+})();
+
+// ---------- UI ----------
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const state = { mode: 'exterior', top: false, labels: true, furniture: true };
+const views = {
+  exterior: { p: [-32, 40, -50], t: [17.5, 9, 22.5] },
+  ground: { p: [2, 62, -20], t: [17.5, 0, 24] },
+  first: { p: [2, 72, -18], t: [17.5, 11, 24] },
+  roof: { p: [58, 62, -28], t: [17.5, 20, 24] },
+};
+const topY = { exterior: 0, ground: L0, first: L1, roof: L2 };
+
+function flyTo(pos, target) {
+  const p0 = camera.position.clone(), t0 = controls.target.clone();
+  const p1 = new THREE.Vector3(...pos), t1 = new THREE.Vector3(...target);
+  const dur = reduceMotion ? 0 : 750, start = performance.now();
+  const step = now => {
+    const k = dur ? Math.min(1, (now - start) / dur) : 1;
+    const e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    camera.position.lerpVectors(p0, p1, e);
+    controls.target.lerpVectors(t0, t1, e);
+    if (k < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+function refresh(move = true) {
+  const m = state.mode;
+  groups.g1.visible = m !== 'ground';
+  groups.g2.visible = m === 'exterior' || m === 'roof';
+  const labelFloor = { exterior: null, ground: 0, first: 1, roof: 2 }[m];
+  labels.forEach(l => { l.obj.visible = state.labels && (l.floor === 'dim' || l.floor === labelFloor); });
+  groups.fur.forEach(f => { f.visible = state.furniture; });
+  document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === m)));
+  if (!move) return;
+  if (state.top) flyTo([17.5, 95, 22.45], [17.5, topY[m], 22.5]);
+  else flyTo(views[m].p, views[m].t);
+}
+
+document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => { state.mode = b.dataset.mode; refresh(); }));
+const toggle = (id, key, move) => {
+  const b = document.getElementById(id);
+  b.addEventListener('click', () => { state[key] = !state[key]; b.setAttribute('aria-pressed', String(state[key])); refresh(move); });
+};
+toggle('t-top', 'top', true);
+toggle('t-lbl', 'labels', false);
+toggle('t-fur', 'furniture', false);
+refresh(false);
+
+// ---------- Render ----------
+function resize() {
+  const w = stage.clientWidth, h = stage.clientHeight;
+  renderer.setSize(w, h);
+  labelRenderer.setSize(w, h);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(stage);
+resize();
+renderer.setAnimationLoop(() => {
+  controls.update();
+  renderer.render(scene, camera);
+  labelRenderer.render(scene, camera);
+});
+</script>
