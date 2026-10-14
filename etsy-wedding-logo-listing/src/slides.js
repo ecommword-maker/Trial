@@ -39,7 +39,7 @@ const withFoil = (svg) => svg.replace(/(<svg[^>]*>)/, '$1' + FOIL_DEFS);
 const L = (style, d, p, css, extra = '') => `<div class="abs lg" style="${css}${extra}">${logoSVG(style, d, p)}</div>`;
 const S = (name, html, style = '', cls = '') => `<section data-name="${name}" class="${cls}" style="${style}">${html}</section>`;
 const head = (k, h, sub, color) => `<div class="head" ${color ? `style="color:${color}"` : ''}><div class="kicker" ${color ? `style="color:${color};opacity:.85"` : ''}>${k}</div><div class="h1" ${color ? `style="color:${color}"` : ''}>${h}</div>${sub ? `<div class="sub" ${color ? `style="color:${color};opacity:.85"` : ''}>${sub}</div>` : ''}</div>`;
-const pill = (n, t) => `<div class="pill"><b>${n}</b>${t}</div>`;
+const pill = (n, t) => `<div class="pill"><div><b>Example use</b>${t}</div><div class="ps">Mockup only · you receive the digital logo file</div></div>`;
 
 // Decorative eucalyptus / olive sprig (nearly straight leafy stem).
 const sprig = (css, col, n = 9, L_ = 150, W_ = 52) =>
@@ -49,24 +49,39 @@ const slides = [];
 
 /* 01 — THUMBNAIL ------------------------------------------------------- */
 slides.push(S('01-thumbnail', `
-  <div class="abs" style="inset:0;background:radial-gradient(circle at 50% 55%, #FBF7F0 0, #EFE6D8 75%)"></div>
-  ${sprig('left:-160px;top:1150px;width:700px;height:900px;transform:rotate(-35deg);opacity:.55', '#8FA07E')}
-  ${sprig('right:-200px;top:-140px;width:700px;height:900px;transform:rotate(145deg);opacity:.5', '#8FA07E')}
-  <div class="head" style="top:95px">
-    <div class="kicker" style="font-size:40px">Personalized · Digital Design</div>
-    <div class="h1" style="font-size:178px;margin-top:10px">Custom Wedding Logo</div>
+  <div class="abs" style="inset:0;background:radial-gradient(circle at 50% 52%, #46594B 0, #2E3D33 58%, #24312A 100%)"></div>
+  <div class="abs" style="inset:0;background:var(--noise)"></div>
+  ${sprig('left:-260px;top:1180px;width:760px;height:980px;transform:rotate(-35deg);opacity:.5', '#8FA07E')}
+  ${sprig('right:-260px;top:-180px;width:760px;height:980px;transform:rotate(145deg);opacity:.5', '#8FA07E')}
+  <div class="abs center" style="left:0;right:0;top:300px;font:600 40px Montserrat;letter-spacing:.32em;color:#D8BF8A">PERSONALIZED FOR YOU</div>
+  <div class="abs center" style="left:0;right:0;top:350px;font:600 168px/1 'Cormorant Garamond';color:#FBF6EC;white-space:nowrap">Custom Wedding Logo</div>
+  <div class="abs paper" style="left:550px;top:590px;width:900px;height:900px;border-radius:10px">
+    ${L('laurel', E, { ink: '#22382D', accent: '#B08D57', paper: '#FBF8F1' }, 'left:50px;top:20px;width:800px;height:800px')}
+    <div class="abs center" style="left:0;right:0;bottom:40px;font:600 26px Montserrat;letter-spacing:.3em;color:#8C7346">YOUR NAMES · YOUR STYLE</div>
   </div>
-  <div class="abs paper" style="left:70px;top:690px;width:620px;height:780px;transform:rotate(-7deg);background:#1F2A44;border-radius:6px">
-    ${L('seal', C.sofia, CHAMP, 'left:-10px;top:130px;width:500px;height:500px')}</div>
-  <div class="abs paper" style="right:70px;top:690px;width:620px;height:780px;transform:rotate(7deg);background:#F1E1DB;border-radius:6px">
-    ${L('script', C.olivia, PAL.burgundy, 'left:150px;top:130px;width:500px;height:500px')}</div>
-  <div class="abs paper" style="left:580px;top:500px;width:840px;height:1140px;border-radius:6px">
-    ${L('laurel', E, PAL.sage, 'left:20px;top:170px;width:800px;height:800px')}</div>
-  <div class="abs" style="left:0;right:0;top:1715px;display:flex;justify-content:center;gap:28px">
-    ${['Proof Before Final', 'PNG · PDF · SVG', 'Print-Ready Files'].map((t) => `<div style="background:#3F4E3A;color:#F7F2EA;font:600 38px Montserrat;letter-spacing:.08em;padding:30px 46px;border-radius:70px;box-shadow:0 12px 30px rgba(0,0,0,.18)">✓&nbsp; ${t}</div>`).join('')}
+  <div class="abs" style="left:1320px;top:640px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#F1DCA4,#C9A45E 55%,#A9833F);
+    box-shadow:0 18px 34px rgba(0,0,0,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#2A2416;transform:rotate(10deg)">
+    <div style="font:700 110px/1 'Cormorant Garamond';margin-top:-10px">9</div>
+    <div style="font:700 34px Montserrat;letter-spacing:.14em">STYLES</div>
+    <div style="font:600 20px Montserrat;letter-spacing:.14em;margin-top:4px">TO CHOOSE</div></div>
+  <div class="abs" style="left:250px;top:1535px;width:1500px;display:flex;justify-content:center;gap:22px">
+    ${['Proof Before Final', 'Any Colors', 'PNG · PDF · SVG'].map((t) => `<div style="background:#FBF6EC;color:#22382D;font:700 36px Montserrat;letter-spacing:.04em;padding:28px 38px;border-radius:70px;white-space:nowrap;box-shadow:0 12px 30px rgba(0,0,0,.25)">✓ ${t}</div>`).join('')}
   </div>
-  <div class="abs center" style="left:0;right:0;top:1865px;font:italic 500 56px 'Cormorant Garamond';color:#4F5E48">Designed with love for your big day</div>
+  <div class="abs center" style="left:0;right:0;top:1672px;font:600 38px Montserrat;letter-spacing:.24em;color:#D8BF8A">⬇ DIGITAL FILE · NOTHING SHIPPED</div>
 `));
+
+/* 01b — ALTERNATIVE THUMBNAIL (variety grid) — rendered separately for A/B testing */
+const altThumb = S('01-thumbnail-alt', `
+  <div class="abs" style="inset:0;background:radial-gradient(circle at 50% 50%, #FBF7F0 0, #EFE6D8 80%)"></div>
+  <div class="abs center" style="left:0;right:0;top:250px;font:600 40px Montserrat;letter-spacing:.32em;color:#4F5E48">DIGITAL FILE · PERSONALIZED</div>
+  <div class="abs center" style="left:0;right:0;top:300px;font:600 168px/1 'Cormorant Garamond';color:#22382D;white-space:nowrap">Custom Wedding Logo</div>
+  <div class="abs" style="left:300px;top:520px;width:1400px;display:grid;grid-template-columns:1fr 1fr;gap:30px">
+    ${[['laurel', E, PAL.sage, '#FFFDF8'], ['seal', C.sofia, CHAMP, '#1F2A44'], ['script', C.olivia, PAL.burgundy, '#F3E4DF'], ['deco', C.rose, PAL.gold, '#FFFDF8']].map(([s, d, p, bg]) =>
+      `<div class="paper" style="position:relative;height:500px;background:${bg};border-radius:10px">${L(s, d, p, 'left:200px;top:20px;width:460px;height:460px')}</div>`).join('')}
+  </div>
+  <div class="abs center" style="left:250px;width:1500px;top:1600px">
+    <span style="display:inline-block;background:#22382D;color:#FBF6EC;font:700 40px Montserrat;letter-spacing:.06em;padding:30px 56px;border-radius:70px;box-shadow:0 12px 30px rgba(0,0,0,.2)">9 Styles · Any Colors · Proof Before Final</span></div>
+`);
 
 /* 02 — STYLE MENU ------------------------------------------------------ */
 const styleList = [
@@ -89,7 +104,7 @@ const steps = [
   ['Order & Personalize', 'Add your names, initials, date, style and colors in the personalization boxes.'],
   ['Receive Your Proof', `Your first design proof arrives in Etsy Messages within ${CFG.proof}.`],
   ['Refine Together', `Ask for any tweaks — ${CFG.revisions} revision rounds are included.`],
-  ['Download Your Files', 'Approve your design and receive the full print & digital file package.'],
+  ['Download Your Files', 'Approve your design and download your digital files — ready to print.'],
 ];
 slides.push(S('03-how-it-works', `
   ${head('Simple · Personal · Stress-free', 'How It Works')}
@@ -190,7 +205,7 @@ slides.push(S('07-mockup-wax-seal', `
     <div class="abs" style="left:540px;top:420px;width:560px;height:560px">${waxSeal}</div>
   </div>
   <div class="abs center" style="left:0;right:0;top:120px"><div class="kicker" style="color:#6E4446">Your monogram, sealed with love</div>
-    <div class="h1" style="color:#5E1F2C;font-size:140px">Wax Seals & Stamps</div></div>
+    <div class="h1" style="color:#5E1F2C;font-size:140px">Use It On Wax Seals</div></div>
   ${pill('02', 'Wax Seals & Envelopes')}
 `, 'background-color:#DCC7BE'));
 
@@ -217,7 +232,7 @@ const napkin = (css, logo = '') => `<div class="abs" style="${css};width:820px;h
   background-image:var(--noise),linear-gradient(135deg,transparent 49.8%,rgba(0,0,0,.05) 50%,transparent 50.2%)">${logo}</div>`;
 slides.push(S('09-mockup-napkins', `
   <div class="abs center" style="left:0;right:0;top:110px"><div class="kicker" style="color:#C9B98F">Cheers to forever</div>
-    <div class="h1" style="color:#F3E7CF;font-size:140px">Cocktail Napkins</div></div>
+    <div class="h1" style="color:#F3E7CF;font-size:140px">Print It On Napkins</div></div>
   ${napkin('left:420px;top:620px;transform:rotate(-12deg)')}
   ${napkin('left:470px;top:580px;transform:rotate(5deg)')}
   ${napkin('left:450px;top:600px;transform:rotate(-3deg)', `<div class="abs lg" style="left:150px;top:150px;width:520px;height:520px">${withFoil(logoSVG('seal', E, FOIL))}</div>`)}
@@ -237,7 +252,7 @@ slides.push(S('10-mockup-dance-floor', `
   <div class="abs" style="inset:0;background:radial-gradient(ellipse at 50% 70%,transparent 30%,rgba(10,5,0,.55) 100%)"></div>
   <div class="abs" style="left:0;right:0;top:0;height:560px;background:linear-gradient(180deg,#1C1712 55%,transparent)"></div>
   <div class="abs center" style="left:0;right:0;top:110px"><div class="kicker" style="color:#C9B98F">Make your first dance unforgettable</div>
-    <div class="h1" style="color:#F3E7CF;font-size:140px">Dance Floor Monogram</div></div>
+    <div class="h1" style="color:#F3E7CF;font-size:140px">Light Up The Dance Floor</div></div>
   ${pill('05', 'Floor Decals & Gobo Lights')}
 `, 'background:#1C1712'));
 
@@ -282,14 +297,14 @@ slides.push(S('12-mockup-stickers-tags', `
   </div>
   <svg class="abs" style="left:1300px;top:-20px;width:600px;height:700px" viewBox="0 0 600 700"><path d="M300,640 C260,420 420,300 360,0" fill="none" stroke="#EDE3D0" stroke-width="10" stroke-dasharray="22 6" stroke-linecap="round"/></svg>
   <div class="abs center" style="left:0;right:0;top:110px"><div class="kicker" style="color:#5A3F22">Little details, big impact</div>
-    <div class="h1" style="color:#2E2014;font-size:140px">Favors & Stickers</div></div>
+    <div class="h1" style="color:#2E2014;font-size:140px">Make Stickers & Tags</div></div>
   ${pill('07', 'Favor Stickers & Gift Tags')}
 `, 'background-color:#C7A47B'));
 
 /* 13 — TABLE SETTING --------------------------------------------------- */
 const silver = 'linear-gradient(90deg,#9A9A9A,#F2F2F2 45%,#B5B5B5)';
 slides.push(S('13-mockup-table-setting', `
-  ${head('Set the table in style', 'Menus & Place Cards')}
+  ${head('Set the table in style', 'Add It To Your Menus')}
   <div class="abs" style="left:1500px;top:440px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.2) 0 60%,rgba(255,255,255,.9) 63% 66%,rgba(200,200,200,.3) 70%);box-shadow:0 20px 30px rgba(0,0,0,.12)"></div>
   <div class="abs" style="left:400px;top:600px;width:1200px;height:1200px;border-radius:50%;background:radial-gradient(circle,#F7F4EE 0 70%,#D9C49A 71%,#C3A46C 80%,#E2CFA3 92%,#B8975E 100%);box-shadow:0 40px 60px rgba(0,0,0,.2)"></div>
   <div class="abs" style="left:500px;top:700px;width:1000px;height:1000px;border-radius:50%;background:radial-gradient(circle,#FFFFFF 0 74%,#F1EEE8 82%,#FFFFFF 100%);box-shadow:0 6px 16px rgba(0,0,0,.12)"></div>
@@ -318,6 +333,7 @@ slides.push(S('14-mockup-foil-letterpress', `
   <div class="abs paper" style="left:1060px;top:700px;width:820px;height:1120px;transform:rotate(3deg);background:#F4F0E9 var(--noise)">
     ${L('crest', E, blind, 'left:60px;top:150px;width:700px;height:700px', ';filter:drop-shadow(-3px -3px 2px rgba(255,255,255,1)) drop-shadow(4px 5px 4px rgba(90,70,40,.30))')}
     <div class="abs center" style="left:0;right:0;bottom:90px;font:500 26px Montserrat;letter-spacing:.35em;color:#9C8E78">BLIND EMBOSS</div></div>
+  ${pill('09', 'Foil & Letterpress Printing')}
 `, 'background-color:#D9D0C3', 'linen'));
 
 /* 15 — FOUR LAYOUTS ---------------------------------------------------- */
@@ -413,7 +429,7 @@ slides.push(S('20-closing', `
   ${head('Thank you for visiting', 'Your Love Story,<br>Beautifully Designed', '', '#F7F2EA')}
   ${L('laurel', E, { ink: '#F7F2EA', accent: '#C9B98F', paper: '#3F4E3A' }, 'left:600px;top:560px;width:800px;height:800px')}
   <div class="abs" style="left:120px;right:120px;top:1400px;display:grid;grid-template-columns:repeat(3,1fr);gap:30px">
-    ${[[`Proof in`, CFG.proof], [`${CFG.revisions} Rounds`, 'of revisions'], ['Print & Digital', 'files included']].map(([a, b]) =>
+    ${[[`Proof in`, CFG.proof], [`${CFG.revisions} Rounds`, 'of revisions'], ['Digital File', 'nothing shipped']].map(([a, b]) =>
       `<div class="center" style="border:2px solid rgba(247,242,234,.4);border-radius:24px;padding:36px 20px;color:#F7F2EA">
         <div class="serif" style="font-size:64px;font-weight:600;line-height:1.1">${a}</div>
         <div style="font:500 30px Montserrat;letter-spacing:.12em;margin-top:12px;color:#C9B98F;text-transform:uppercase">${b}</div></div>`).join('')}
@@ -423,4 +439,4 @@ slides.push(S('20-closing', `
     <div style="font:500 30px Montserrat;letter-spacing:.2em;margin-top:22px;color:#C9B98F">QUESTIONS? MESSAGE US ANYTIME</div></div>
 `, 'background-color:#3F4E3A'));
 
-document.getElementById('root').innerHTML = slides.join('');
+document.getElementById('root').innerHTML = slides.join('') + altThumb;

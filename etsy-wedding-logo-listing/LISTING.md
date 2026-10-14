@@ -38,8 +38,25 @@ wedding stationery
 ## Category & attributes
 
 - Category: Paper & Party Supplies › Paper › Stationery › Design & Templates (or Weddings › Decorations)
-- Type: Digital file (made to order). Mark it as a **personalized** listing.
-- Occasion: Wedding · Holiday: none · Primary color: choose the color of the thumbnail (Green)
+- **Type: Digital** (you deliver files only — nothing is shipped). Turn on **Personalization**.
+- Occasion: Wedding · Primary color: Green (matches the thumbnail)
+
+### How to set up a made-to-order digital listing
+
+Etsy makes every digital listing upload at least one file, and buyers get it right after they pay. Your logo is designed *after* purchase, so:
+
+1. Upload **`Order-Info-Digital-Delivery.pdf`** (in this folder) as the listing's digital file. It's a thank-you page that explains the proof → revisions → final-files process.
+2. Send proofs and the final files to the buyer through **Etsy Messages** (attach the PNG/JPG/PDF; zip the SVG if needed).
+3. In the **Processing time** field, enter your proof window (e.g. 1–3 business days), so buyers know the custom design isn't instant.
+
+---
+
+## Thumbnail
+
+- `images/01-thumbnail.png` keeps everything important inside a **center safe zone** (x 250–1750, y 290–1745). It survives Etsy's square, 4:3 (search) and 4:5 (app) crops without cutting the title, logo or badges.
+- Dark forest-green background so it stands out in Etsy's white search grid (most competitors use beige).
+- After uploading, click **Adjust thumbnail** in the Etsy photo editor and keep the crop centered.
+- Want to A/B test? `alternative/01-thumbnail-alt.png` is a lighter version showing 4 styles. Swap it in for 2–4 weeks and compare views → visits in Shop Stats.
 
 ---
 
@@ -152,7 +169,7 @@ Questions? Message us anytime — we're happy to help! ♡
 
 | # | File | Alt text (≤250 chars) |
 |---|---|---|
-| 1 | `01-thumbnail.png` | Custom wedding logo with laurel monogram E & J, circle seal and script name designs |
+| 1 | `01-thumbnail.png` | Custom wedding logo digital file, gold laurel monogram E & J on ivory card, 9 styles to choose |
 | 2 | `02-logo-styles.png` | Nine wedding logo styles: laurel, arch, minimal, seal, art deco, script, crest, wreath, coastal |
 | 3 | `03-how-it-works.png` | How to order a custom wedding logo in four steps: personalize, proof, revise, download |
 | 4 | `04-what-you-receive.png` | Files included: PNG, JPG, PDF, SVG, three colorways and social media sizes |
