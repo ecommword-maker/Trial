@@ -7,7 +7,7 @@ Everything you need to publish this listing. Upload the images in `images/` in n
 ## Title (≤140 characters)
 
 ```
-Custom Wedding Logo Design, Personalized Wedding Monogram, Couple Initials Crest, Laurel Wedding Emblem, Digital File for Invitation Digital File for Invitations & Signs Signs
+Custom Wedding Logo Design, Personalized Wedding Monogram, Couple Initials Crest, Laurel Wedding Emblem, Digital File for Invitations, Signs
 ```
 
 ## Tags (13 tags, each ≤20 characters)
