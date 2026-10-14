@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Wedding Logo Listing Images</title>
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+  :root {
+    --ivory: #F7F2EA; --cream: #FFFDF8; --ink: #2E3A30; --sage: #8A9A7B; --sage-d: #4F5E48;
+    --gold: #B08D57; --blush: #EBD8D2; --muted: #6E6A62;
+    --noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .07 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ccc; }
+  section { width: 2000px; height: 2000px; position: relative; overflow: hidden; background: var(--ivory) var(--noise);
+    font-family: 'Montserrat'; color: var(--ink); margin-bottom: 40px; }
+  .abs { position: absolute; }
+  .logo svg, .lg svg { display: block; width: 100%; height: 100%; }
+  .kicker { font: 500 34px 'Montserrat'; letter-spacing: .35em; text-transform: uppercase; color: var(--sage-d); text-align: center; }
+  .h1 { font: 500 150px/1.02 'Cormorant Garamond'; text-align: center; color: var(--ink); }
+  .sub { font: italic 400 58px/1.25 'Cormorant Garamond'; text-align: center; color: var(--muted); }
+  .head { position: absolute; left: 0; right: 0; top: 110px; }
+  .head .h1 { margin-top: 18px; }
+  .head .sub { margin-top: 14px; }
+  .paper { background: var(--cream) var(--noise); box-shadow: 0 40px 70px rgba(40,30,20,.20), 0 8px 18px rgba(40,30,20,.12); }
+  .card { background: #fff; border-radius: 28px; box-shadow: 0 18px 40px rgba(40,30,20,.10); }
+  .pill { position: absolute; left: 80px; bottom: 80px; padding: 26px 46px; background: rgba(255,253,248,.92); border-radius: 60px;
+    font: 500 34px 'Montserrat'; letter-spacing: .2em; text-transform: uppercase; color: var(--ink); box-shadow: 0 10px 30px rgba(0,0,0,.12); }
+  .pill b { color: var(--gold); font-weight: 600; margin-right: 14px; }
+  .linen { background-color: #E7E0D3; background-image: var(--noise),
+      repeating-linear-gradient(0deg, rgba(255,255,255,.06) 0 2px, transparent 2px 5px),
+      repeating-linear-gradient(90deg, rgba(0,0,0,.035) 0 1px, transparent 1px 4px); }
+  .serif { font-family: 'Cormorant Garamond'; }
+  .script { font-family: 'Pinyon Script'; }
+  .center { text-align: center; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="logos.js"></script>
+<script src="slides.js"></script>
+</body>
+</html>
